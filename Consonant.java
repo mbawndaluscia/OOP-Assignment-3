@@ -2,7 +2,7 @@ package kevOOP;
 
 public class Consonant extends Letter {
 
-	public Consonant(char c) {
+	public Consonant(String c) {
 		super(c);
 		
 	}

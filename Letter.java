@@ -1,13 +1,13 @@
 package kevOOP;
 
 public class Letter {
-	char letter;
+	String letter;
 	
-	public Letter(char c){
+	public Letter(String c){
 		letter=c;
 	}
 	
-	public char getLetter(){
+	public String getLetter(){
 		return letter;
 	}
 }

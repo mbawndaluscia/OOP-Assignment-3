@@ -2,7 +2,7 @@ package kevOOP;
 
 public class Vowel extends Letter {
 
-	public Vowel(char c) {
+	public Vowel(String c) {
 		super(c);
 		
 	}
