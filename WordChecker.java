@@ -1,7 +1,6 @@
 package kevOOP;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,8 +11,12 @@ public class WordChecker  {
 	//Static list of all valid words
 	static ArrayList<String> dictionary = new ArrayList<String>();
 	
+	//letters in the round
+	Letter [] roundLetters;
+	
 	//Constructor
-	public WordChecker(){
+	public WordChecker(Letter[] roundLetters){
+		this.roundLetters=roundLetters;
 		loadWords();
 	}
 	
@@ -68,12 +71,14 @@ public class WordChecker  {
 		}
 		return true;
 	}
-	//testing dictionary
-	 public static void main(String[] args){
-		 WordChecker wc=new WordChecker();
-		 System.out.println(wc.inDictionary("woof"));
-		 
-	 }
+	
+	public boolean validWord(String word){
+		if(inDictionary(word)&& matchesLetters(word,roundLetters)){
+			return true;
+		}
+		return false;
+	}
+	
 }
 
 	

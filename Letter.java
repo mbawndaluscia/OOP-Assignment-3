@@ -1,5 +1,4 @@
 package kevOOP;
-
 public class Letter {
 	String letter;
 	
@@ -10,4 +9,7 @@ public class Letter {
 	public String getLetter(){
 		return letter;
 	}
+	
+	
+	
 }

@@ -6,7 +6,8 @@ public class Word {
 	String word;
 	int length;
 	int value;
-	boolean inDictionary;
+	
+
 	
 	//Constructor
 	public Word(String s){
@@ -29,14 +30,11 @@ public class Word {
 	//(If word is valid, value=length except for 9 letter word=18)
 	
 	private void setValue(){
-		
-			if(length==9){
+		if(length==9){
 				value=18;
 			}else{
 				value=length;
 			}
-		
-		
 	}
 	
 	public int getValue(){
