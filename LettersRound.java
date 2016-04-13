@@ -1,14 +1,25 @@
 package kevOOP;
+import java.util.ArrayList;
+
+import controlP5.*;
 import processing.core.PApplet;
 public class LettersRound extends GameRound{
 	PApplet ap;
+	ControlP5 cp5;
 	//Array of 9 letters for this round
 	Letter[] roundLetters=new Letter[9];
 	
+	//Buttons for round letters and selected letters
+	Button[] roundLetterButtons=new Button[9];
+	Button[] selectedLetterButtons=new Button[9];
+	
+	ArrayList <String> notedWords;
 	//Letter Distribution for this round
-	LettersDistribution letDis;
+	LettersDistribution letterDistribution;
 	
 	int nextLetterIndex=0;
+	
+	int nextSelectedLetterIndex=0;
 	
 	//Maximum numbers allowed of each letter type
 	int maxVowels=5;
@@ -30,22 +41,30 @@ public class LettersRound extends GameRound{
 	
 	
 	public LettersRound(PApplet applet){
-		letDis=new LettersDistribution();
+		letterDistribution=new LettersDistribution();
 		ap=applet;
-		
+		cp5=Countdown.cp5;
+		for(int i=0; i<9; i++){
+			roundLetterButtons[i]=new Button();
+			selectedLetterButtons[i]=new Button();
+		}
+		notedWords=new ArrayList<String>();
 	}
 	
 	public void addVowel(){
-		if(countVowels<maxVowels){
-			roundLetters[nextLetterIndex]=letDis.randomVowel();
+		if(countVowels<maxVowels&&nextLetterIndex<9){
+			roundLetters[nextLetterIndex]=letterDistribution.randomVowel();
+			drawLetter();
 			nextLetterIndex++;
 			countVowels++;
 		}
 	}
 	
 	public void addConsonant(){
-		if(countConsonants<maxConsonants){
-			roundLetters[nextLetterIndex]=letDis.randomConsonant();
+		if(countConsonants<maxConsonants&&nextLetterIndex<9){
+			roundLetters[nextLetterIndex]=letterDistribution.randomConsonant();
+			drawLetter();
+
 			nextLetterIndex++;
 			countConsonants++;
 		}
@@ -86,11 +105,11 @@ public class LettersRound extends GameRound{
 			if(p1Word.getValue()==p2Word.getValue()){
 				setPlayerScores(0,p1Word.getValue());
 				
-			//4b player 1 wins
+			//#4b player 1 wins
 			}else if(p1Word.getValue()>p2Word.getValue()){
 				setPlayerScores(1,p1Word.getValue());
 				
-			//4b player 2 wins
+			//#4c player 2 wins
 			}else{
 				setPlayerScores(2,p2Word.getValue());
 			}
@@ -98,9 +117,113 @@ public class LettersRound extends GameRound{
 	}
 	
 	void drawRoundLayout(){
-		ap.background(127);
-		ap.rect(200,100,400,200);
+		ap.background(185);
+		ap.fill(0,0,225);
+		ap.rect(103,300,594,132);
+		
+		ap.line(103, 366, 697, 366);
+		for(int i=103; i<697; i+=66){
+			ap.line(i,300,i,432);
+		}
+		
+		Countdown.btnConsonant.drawButton();
+		Countdown.btnVowel.drawButton();
+		
 	}
+	
+	private void drawLetter(){
+		int textSize=44;
+		roundLetterButtons[nextLetterIndex]=new Button(
+				ap,roundLetters[nextLetterIndex].getLetter(),103+nextLetterIndex*66,300,66,66,textSize );
+		
+		
+		ap.fill(255);
+		roundLetterButtons[nextLetterIndex].drawButton();
+		if(nextLetterIndex==8){
+			
+			Countdown.btnVowel.toggleButton();
+			Countdown.btnConsonant.toggleButton();			
+			Countdown.btnDel.toggleButton();
+			Countdown.btnClear.toggleButton();
+			Countdown.btnNoteWord.toggleButton();
+			
+			addTextBox();
+			
+			
+			for(int i=0; i<9; i++){
+				roundLetterButtons[i].toggleButton();
+			}
+		}
+	}
+	public void addTextBox(){
+		Countdown.cp5.addTextfield("wordInput")
+		    .setPosition(370,480)
+	        .setSize(330,70)
+	        .setFont(Countdown.font)
+	        .setFocus(true)
+	        .setCaptionLabel("Type words here")
+		    .setColor(ap.color(255,255,255))
+		    ;
+		
+		Countdown.cp5.addBang("wordEntered")
+			.setLabel("Enter Word")
+		    .setPosition(700,480)
+	        .setSize(80,70)
+			;
+	}
+	
+	
+
+	
+	
+	public void pickLetter(String letter){
+		
+		selectedLetterButtons[nextSelectedLetterIndex]=new Button(ap,letter.toUpperCase(),
+																  103+nextSelectedLetterIndex*66,
+																  366,66,66,44);
+	
+		selectedLetterButtons[nextSelectedLetterIndex].drawButton();
+		selectedLetterButtons[nextSelectedLetterIndex].toggleButton();
+
+		if(nextSelectedLetterIndex<8){
+			nextSelectedLetterIndex++;
+		}
+	}
+	
+	public void deleteLetter(){
+		if(selectedLetterButtons[8].btnText!=""){
+			selectedLetterButtons[8].btnText="";
+			selectedLetterButtons[8].drawButton();
+		}
+		else if(nextSelectedLetterIndex>0){
+			nextSelectedLetterIndex--;
+			selectedLetterButtons[nextSelectedLetterIndex].btnText="";
+			selectedLetterButtons[nextSelectedLetterIndex].drawButton();
+		}
+		
+	}
+	
+	public void clearLetters(){
+		for(int i=0; i<9; i++){
+			if(selectedLetterButtons[i].btnText!=""){
+				selectedLetterButtons[i].btnText="";
+				selectedLetterButtons[i].drawButton();
+			}
+		}
+		nextSelectedLetterIndex=0;
+	}
+	
+	public void noteWord(){
+		String word="";
+		for(int i=0; i<9; i++){
+			word+=selectedLetterButtons[i].btnText;
+			
+		}
+		clearLetters();
+		notedWords.add(word);
+	}
+	
+	
 
 	
 

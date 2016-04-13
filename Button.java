@@ -8,21 +8,30 @@ public class Button {
 	String btnText;
 	float xLoc,yLoc;
 	float btnWidth, btnHeight;
-	
+	int textSize;
 	boolean active;
 	
-	public Button(PApplet applet, String text,float x,float y, float w, float h ){
+	public Button(){
+		btnText="";
+	}
+	
+	public Button(PApplet applet, String text,float x,float y, float w, float h, int _textSize ){
 		ap=applet;
 		btnText=text;
 		xLoc=x;
 		yLoc=y;
 		btnWidth=w;
 		btnHeight=h;
+		active=false;
+		textSize=_textSize;
 	}
 	
 	public void drawButton(){
+		ap.fill(0,0,225);
 		ap.rect(xLoc, yLoc, btnWidth, btnHeight);
 		ap.textAlign(PConstants.CENTER);
+		ap.fill(255);
+		ap.textSize(textSize);
 		ap.text(btnText, xLoc+btnWidth/2, yLoc+btnHeight*2/3);
 	}
 	
@@ -30,9 +39,14 @@ public class Button {
 		active=!active;
 	}
 	
+	public boolean active(){
+		return active;
+	}
+	
 	public boolean clicked(int x, int y){
 		if(x>=xLoc && x<=xLoc+btnWidth &&
-		   y>=yLoc && y<=yLoc+btnHeight){
+		   y>=yLoc && y<=yLoc+btnHeight &&
+		   this.active()){
 			return true;
 		}
 		return false;
