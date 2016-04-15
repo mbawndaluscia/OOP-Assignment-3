@@ -1,8 +1,9 @@
 package kevOOP;
-import java.util.ArrayList;
 
 import controlP5.*;
+
 import processing.core.PApplet;
+
 public class LettersRound extends GameRound{
 	PApplet ap;
 	ControlP5 cp5;
@@ -13,7 +14,7 @@ public class LettersRound extends GameRound{
 	Button[] roundLetterButtons=new Button[9];
 	Button[] selectedLetterButtons=new Button[9];
 	
-	ArrayList <String> notedWords;
+	
 	//Letter Distribution for this round
 	LettersDistribution letterDistribution;
 	
@@ -33,6 +34,8 @@ public class LettersRound extends GameRound{
 	//words chosen by each player
 	Word p1Word,p2Word;
 	
+	 boolean p1Valid,p2Valid;
+	
 	//word checker object
 	WordChecker wordChecker;
 	
@@ -44,11 +47,15 @@ public class LettersRound extends GameRound{
 		letterDistribution=new LettersDistribution();
 		ap=applet;
 		cp5=Countdown.cp5;
+		
 		for(int i=0; i<9; i++){
 			roundLetterButtons[i]=new Button();
 			selectedLetterButtons[i]=new Button();
+			Countdown.buttons.add(roundLetterButtons[i]);
+			Countdown.buttons.add(selectedLetterButtons[i]);
 		}
-		notedWords=new ArrayList<String>();
+		
+	
 	}
 	
 	public void addVowel(){
@@ -57,6 +64,9 @@ public class LettersRound extends GameRound{
 			drawLetter();
 			nextLetterIndex++;
 			countVowels++;
+		}
+		if(nextLetterIndex==9){
+			testScore();
 		}
 	}
 	
@@ -67,6 +77,9 @@ public class LettersRound extends GameRound{
 
 			nextLetterIndex++;
 			countConsonants++;
+		}
+		if(nextLetterIndex==9){
+			testScore();
 		}
 	}
 	
@@ -80,8 +93,8 @@ public class LettersRound extends GameRound{
 		wordChecker=new WordChecker(roundLetters);
 		
 		//are the words valid?
-		boolean p1Valid=wordChecker.validWord(p1Word.getWord());
-		boolean p2Valid=wordChecker.validWord(p2Word.getWord());
+		 p1Valid=wordChecker.validWord(p1Word.getWord());
+		 p2Valid=wordChecker.validWord(p2Word.getWord());
 		
 		//#1 neither player has a valid word, both score 0
 		if(!p1Valid&&
@@ -145,9 +158,9 @@ public class LettersRound extends GameRound{
 			Countdown.btnConsonant.toggleButton();			
 			Countdown.btnDel.toggleButton();
 			Countdown.btnClear.toggleButton();
-			Countdown.btnNoteWord.toggleButton();
+			Countdown.btnSelectWord.toggleButton();
 			
-			addTextBox();
+			addCP5Controls();
 			
 			
 			for(int i=0; i<9; i++){
@@ -155,7 +168,7 @@ public class LettersRound extends GameRound{
 			}
 		}
 	}
-	public void addTextBox(){
+	public void addCP5Controls(){
 		Countdown.cp5.addTextfield("wordInput")
 		    .setPosition(370,480)
 	        .setSize(330,70)
@@ -169,6 +182,15 @@ public class LettersRound extends GameRound{
 			.setLabel("Enter Word")
 		    .setPosition(700,480)
 	        .setSize(80,70)
+			;
+		
+		Countdown.cp5.addTextlabel("yourWord")
+			.setPosition(697, 366)
+	        .setSize(100,66)
+	        .setFont(Countdown.font)
+	        .setText("Your Word")
+		    //.setColor(ap.color(255,255,255))
+			
 			;
 	}
 	
@@ -213,14 +235,40 @@ public class LettersRound extends GameRound{
 		nextSelectedLetterIndex=0;
 	}
 	
-	public void noteWord(){
+	public void selectWord(){
 		String word="";
 		for(int i=0; i<9; i++){
 			word+=selectedLetterButtons[i].btnText;
 			
 		}
-		clearLetters();
-		notedWords.add(word);
+		
+		p1Word=new Word(word);
+		p2Word=new Word(word);
+		//if(timeUp){
+			calculateScores();
+			ap.stroke(0);
+			String valid="is not a valid word";
+			if(wordChecker.validWord(p1Word.word)){
+				valid="is a valid word";
+			}
+			ap.text("selected word: "+ p1Word.getWord()+" ("+getPlayerOneScore()+")"+valid,300,50);
+			
+		//}
+	}
+	
+	public void testScore(){
+		startTimer();
+		showTimer();
+		
+	}
+	
+	public void showTimer(){
+		ap.fill(255);
+		ap.rect(0,0,100,100);
+		ap.fill(0);
+		ap.text(getTimer(),55,55);
+		
+		
 	}
 	
 	

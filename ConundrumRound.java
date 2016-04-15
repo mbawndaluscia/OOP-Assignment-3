@@ -5,9 +5,9 @@ import processing.core.PApplet;
 public class ConundrumRound extends GameRound{
 	private String jumbledLetters;
 	private String solution;
-	
-	public ConundrumRound(PApplet ap) {
-		// TODO Auto-generated constructor stub
+	PApplet ap;
+	public ConundrumRound(PApplet applet) {
+		ap=applet;
 	}
 
 
@@ -35,7 +35,9 @@ public class ConundrumRound extends GameRound{
 		// TODO Auto-generated method stub
 		
 	}
-	
+	public void showTimer(){
+		ap.text(getTimer(),55,55);
+	}
 	
 	
 }

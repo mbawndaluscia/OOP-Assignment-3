@@ -24,10 +24,12 @@ public class Button {
 		btnHeight=h;
 		active=false;
 		textSize=_textSize;
+		
 	}
 	
 	public void drawButton(){
 		ap.fill(0,0,225);
+		ap.stroke(210);
 		ap.rect(xLoc, yLoc, btnWidth, btnHeight);
 		ap.textAlign(PConstants.CENTER);
 		ap.fill(255);

@@ -73,7 +73,7 @@ public class WordChecker  {
 	}
 	
 	public boolean validWord(String word){
-		if(inDictionary(word)&& matchesLetters(word,roundLetters)){
+		if(inDictionary(word.toLowerCase())&& matchesLetters(word.toLowerCase(),roundLetters)){
 			return true;
 		}
 		return false;

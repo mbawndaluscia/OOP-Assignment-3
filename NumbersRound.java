@@ -110,7 +110,9 @@ public class NumbersRound extends GameRound{
 		
 	}
 	
-	
+	public void showTimer(){
+		ap.text(getTimer(),55,55);
+	}
 	
 
 	

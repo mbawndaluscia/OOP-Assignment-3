@@ -13,6 +13,10 @@ abstract class GameRound {
 	
 	private int timer;
 	
+	private boolean timerStarted;
+
+	protected boolean timeUp;
+	
 	
 	
 	
@@ -50,14 +54,25 @@ abstract class GameRound {
 	
 	public void startTimer(){
 		timer=30;
+		timerStarted=true;
 	}
 	
 	public void incrementTimer(){
-		timer-=1;
+		if(timer>0){
+			timer-=1;
+		}else{
+			timeUp=true;	
+		}
 	}
 	
 	public int getTimer(){
 		return timer;
+	}
+	
+	public abstract void showTimer();
+	
+	public boolean timerStarted(){
+		return timerStarted;
 	}
 	
 	public void setRoundTitle(String title){

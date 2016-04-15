@@ -19,8 +19,10 @@ public class Countdown extends PApplet{
 	static ArrayList<Button> buttons=new ArrayList<Button>();
 	static Button btnStartGame, btnGameRules;
 	static Button btnConsonant, btnVowel;
-	static Button  btnDel, btnClear, btnNoteWord;
+	static Button  btnDel, btnClear, btnSelectWord;
 	boolean gameStarted;
+	
+	int timer=0;
 	public void setup(){
 		 background(185);
 		 font = createFont ("Serif",48);
@@ -51,7 +53,7 @@ public class Countdown extends PApplet{
 		btnVowel=new Button(this,"Vowel",235, 432,132,40,textSize);
 		btnDel=new Button(this,"Del",367, 432,66,40,textSize);
 		btnClear=new Button(this,"Clear",433, 432,132,40,textSize);
-		btnNoteWord=new Button(this,"NoteWord",565, 432,132,40,textSize);
+		btnSelectWord=new Button(this,"Select Word",565, 432,132,40,textSize);
 		buttons.add(btnStartGame);
 		btnStartGame.active=true;
 		buttons.add(btnGameRules);
@@ -60,7 +62,7 @@ public class Countdown extends PApplet{
 		buttons.add(btnVowel);
 		buttons.add(btnDel);
 		buttons.add(btnClear);
-		buttons.add(btnNoteWord);
+		buttons.add(btnSelectWord);
 	}
 	
 	
@@ -75,10 +77,20 @@ public class Countdown extends PApplet{
 		}else{
 		fill(185);
 		rect(103, 432,594,40);
+		
 		for(Button button:buttons){
 			if(button.active())
 				button.drawButton();
 			}
+		}
+		
+		if(roundController.currentRound().timerStarted()){
+			timer++;
+			if(timer==60){
+				roundController.currentRound().incrementTimer();
+				timer=0;
+			}
+			roundController.currentRound().showTimer();
 		}
 		
 	}
@@ -117,6 +129,8 @@ public class Countdown extends PApplet{
 					((LettersRound) roundController.currentRound()).deleteLetter();
 				}else if (button==btnClear){
 					((LettersRound) roundController.currentRound()).clearLetters();
+				}else if (button==btnSelectWord){
+					((LettersRound) roundController.currentRound()).selectWord();
 				}
 				
 			}
@@ -141,11 +155,15 @@ public class Countdown extends PApplet{
 	}
 	
 	public void keyPressed(){
-		if(roundController.currentRound() instanceof LettersRound){
+		//if(roundController.currentRound() instanceof LettersRound){
 			if(key==13){
 				wordEntered();
 			}
-		}
+		//}
+	}
+	
+	public void drawScorePanel(){
+		
 	}
 	
 
