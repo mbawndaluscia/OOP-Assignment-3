@@ -3,10 +3,10 @@ package kevOOP;
 
 
 
+import java.awt.Color;
 import java.util.ArrayList;
 
-import controlP5.ControlP5;
-import controlP5.Textfield;
+import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -20,12 +20,21 @@ public class Countdown extends PApplet{
 	static Button btnStartGame, btnGameRules;
 	static Button btnConsonant, btnVowel;
 	static Button  btnDel, btnClear, btnSelectWord;
-	boolean gameStarted;
-	
+	Textfield nameInput;
+	ListBox opponentList;
+	Textlabel lblP1Name;
+	Textlabel lblP2Name; 
+	Textlabel lblP1Score;
+	Label lblP2Score;
+	Label lblRoundTitle;
+	boolean gameStarted, playersChosen;
+	Player humanPlayer, AIPlayer;
+	String[] opponents=new String[]{"Dim Dave","Brainy Bryan","Number Wizard Norm"};
 	int timer=0;
 	public void setup(){
-		 background(185);
-		 font = createFont ("Serif",48);
+		
+		 background(232,216,226);
+		 font = createFont ("Serif",48,true);
 		 textFont (font);
 		 cp5=new ControlP5(this);
 		
@@ -47,8 +56,8 @@ public class Countdown extends PApplet{
 	private void loadButtons(){
 		int textSize=22;
 		
-		btnStartGame=new Button(this,"Start Game",50,510,120,40,textSize);
-		btnGameRules=new Button(this,"Game Rules",180,510,120,40,textSize);
+		btnStartGame=new Button(this,"New Game",50,510,120,40,textSize);
+		btnGameRules=new Button(this,"Game Rules",50,550,120,40,textSize);
 		btnConsonant=new Button(this,"Consonant",103, 432,132,40,textSize);
 		btnVowel=new Button(this,"Vowel",235, 432,132,40,textSize);
 		btnDel=new Button(this,"Del",367, 432,66,40,textSize);
@@ -71,12 +80,12 @@ public class Countdown extends PApplet{
 	
 	public void draw(){
 		 
-		if(!gameStarted){
+		if(! playersChosen){
 			showOpeningScreen();
 			
 		}else{
-		fill(185);
-		rect(103, 432,594,40);
+		fill(232,216,226);
+//		rect(103, 432,594,40);
 		
 		for(Button button:buttons){
 			if(button.active())
@@ -106,6 +115,40 @@ public class Countdown extends PApplet{
 		btnStartGame.drawButton();
 		btnGameRules.drawButton();
 		
+		gameStarted=true;
+		
+		
+	}
+	
+	private void addNameEntry(){
+	   nameInput=cp5.addTextfield("nameInput")
+	    .setPosition(175,510)
+        .setSize(200,60)
+        .setFont(Countdown.font)
+        .setFocus(true)
+        
+        .setCaptionLabel("Enter Your Name")
+	    .setColor(color(255))
+	    
+	    ;
+	   
+	   cp5.getController("nameInput")
+	     .getCaptionLabel()
+	     .setFont(font)
+	     .setColor(0)
+	     .setSize(20)
+	     ;
+	
+	   
+	  
+	 
+	   opponentList=cp5.addListBox("chooseOpponent")
+			  .setLabel("Choose Opponent")
+			  .setPosition(450,510)
+		      .setSize(100,80)
+		      .addItems(opponents)
+		      
+			  ;
 	}
 	
 	public void mousePressed(){
@@ -113,12 +156,17 @@ public class Countdown extends PApplet{
 			if(button.clicked(mouseX, mouseY)){
 				
 				if(button==btnStartGame){
-					roundController.nextRound();
-					roundController.currentRound().drawRoundLayout();
-					btnStartGame.toggleButton();
-					btnConsonant.toggleButton();
-					btnVowel.toggleButton();
-					gameStarted=true;
+					if(!playersChosen){
+						if(gameStarted){
+							playersChosen=true;
+						}
+						addNameEntry();
+						btnStartGame.btnText="Start Game";
+						btnStartGame.drawButton();
+					}else{
+						
+						startGame();
+					}
 				}
 				
 				if(button==btnConsonant){
@@ -147,23 +195,60 @@ public class Countdown extends PApplet{
 		
 		LettersRound lr=((LettersRound)roundController.currentRound());
 		lr.clearLetters();
-		String word=Countdown.cp5.get(Textfield.class,"wordInput").getText();
+		String word=cp5.get(Textfield.class,"wordInput").getText();
 		for(int i=0; i<word.length(); i++){
 			lr.pickLetter(word.substring(i, i+1));
 		}
 		
 	}
 	
+	public void startGame(){
+		String p1Name=nameInput.getText();
+		String p2Name=opponentList.getValueLabel().getText();
+		nameInput.hide();
+		opponentList.hide();
+		humanPlayer=new Player(p1Name,1);
+		AIPlayer=new Player(p2Name,2);
+		
+		roundController.nextRound();
+		roundController.currentRound().drawRoundLayout();
+		btnStartGame.toggleButton();
+		btnConsonant.toggleButton();
+		btnVowel.toggleButton();
+		drawScorePanel();
+	}
+	
 	public void keyPressed(){
 		//if(roundController.currentRound() instanceof LettersRound){
-			if(key==13){
+			if(key=='\n'){
 				wordEntered();
 			}
 		//}
 	}
 	
 	public void drawScorePanel(){
-		
+		lblP1Name=cp5.addLabel("p1Name")
+				.setText(humanPlayer.getName())
+				.setPosition(50, 50)
+				.setFont(font)
+				;
+		lblP2Name=cp5.addLabel("p2Name")
+				.setText(AIPlayer.getName())
+				.setPosition(50, 200)
+				.setFont(font)
+				
+				;
+		lblP1Score=cp5.addLabel("p1Score")
+				.setText(str(humanPlayer.getScore()))
+				.setPosition(200, 50)
+				.setFont(font)
+				;
+		lblP1Score=cp5.addLabel("p2Score")
+				.setText(str(AIPlayer.getScore()))
+				.setPosition(200, 200)
+				.setFont(font)
+				;
+				
 	}
 	
 

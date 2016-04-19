@@ -9,4 +9,21 @@ public class Player {
 		playerName=pName;
 		playerNumber=pNum;
 	}
+	
+	public String getName(){
+		return playerName;
+		
+	}
+	public int getNumber(){
+		return playerNumber;
+		
+	}
+	
+	public int getScore(){
+		return score;
+	}
+	
+	public void updateScore(int i){
+		score+=i;
+	}
 }

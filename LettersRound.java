@@ -130,7 +130,7 @@ public class LettersRound extends GameRound{
 	}
 	
 	void drawRoundLayout(){
-		ap.background(185);
+		ap.background(232,216,226);
 		ap.fill(0,0,225);
 		ap.rect(103,300,594,132);
 		
@@ -184,14 +184,7 @@ public class LettersRound extends GameRound{
 	        .setSize(80,70)
 			;
 		
-		Countdown.cp5.addTextlabel("yourWord")
-			.setPosition(697, 366)
-	        .setSize(100,66)
-	        .setFont(Countdown.font)
-	        .setText("Your Word")
-		    //.setColor(ap.color(255,255,255))
-			
-			;
+		
 	}
 	
 	
