@@ -156,7 +156,8 @@ public class LettersRound extends GameRound{
 		return roundLetters;
 	}
 	
-	private void calculateScores(){
+	public void calculateScores(){
+		
 		//word checker and finder objects
 		wordChecker=new WordChecker(roundLetters);
 		wordFinder=new WordFinder(roundLetters);
@@ -165,9 +166,7 @@ public class LettersRound extends GameRound{
 		p2Word=new Word(p2SelectedWord);
 		
 		
-//		for(String s: wordFinder.getAllWordsFound()){
-//			System.out.println(s);
-//		}
+
 		//are the words valid?
 		 p1Valid=wordChecker.validWord(p1Word.getWord());
 		 p2Valid=wordChecker.validWord(p2Word.getWord());
@@ -224,7 +223,7 @@ public class LettersRound extends GameRound{
 	 
 	 ap.fill(255,140,0);
 	 ap.stroke(255,140,0);
-	 ap.rect(ap.width/2-110,10,50,100);
+	// ap.rect(ap.width/2-110,10,50,100);
 	 Countdown.lblP1Score
 		.setText(PApplet.str(Countdown.humanPlayer.getScore()));
 	 Countdown.lblP2Score
@@ -239,15 +238,9 @@ public class LettersRound extends GameRound{
 	}
 	
 	void drawRoundLayout(){
-		ap.background(255,140,0);
-		ap.fill(0,0,225);
-		ap.rect(103,300,594,132);
 		
-		ap.line(103, 366, 697, 366);
-		for(int i=103; i<697; i+=66){
-			ap.line(i,300,i,432);
-		}
 		
+		drawBoard();
 		if(playerChoosing==1){
 			Countdown.btnVowel.show();
 			Countdown.btnConsonant.show();
@@ -259,11 +252,24 @@ public class LettersRound extends GameRound{
 		Countdown.btnDel.hide();
 		Countdown.btnClear.hide();
 		Countdown.btnConfirmWord.hide();
+		
+		showLetters();
 	
 		Countdown.lblP1Word.setText("");
 		Countdown.lblP2Word.setText("");
 	}
-	
+	public void drawBoard(){
+		ap.fill(0,0,225);
+		ap.stroke(210);
+		ap.rect(103,300,594,132);
+		
+		ap.line(103, 366, 697, 366);
+		
+		
+		for(int i=103; i<697; i+=66){
+			ap.line(i,300,i,432);
+		}
+	}
 	private void drawLetter(){
 		int textSize=44;
 		roundLetterButtons[nextLetterIndex]=new Button(
@@ -271,7 +277,9 @@ public class LettersRound extends GameRound{
 		
 		
 		ap.fill(255);
+		roundLetterButtons[nextLetterIndex].show();
 		roundLetterButtons[nextLetterIndex].drawButton();
+	
 		if(nextLetterIndex==8){
 			
 			Countdown.btnVowel.hide();
@@ -283,12 +291,11 @@ public class LettersRound extends GameRound{
 			addCP5Controls();
 			
 			
-			for(int i=0; i<9; i++){
-				roundLetterButtons[i].show();
-			}
+			showLetters();
 		}
 	}
 	public void addCP5Controls(){
+		
 		Countdown.wordInput
 		    .setPosition(370,480)
 	        .setSize(330,70)
@@ -296,11 +303,16 @@ public class LettersRound extends GameRound{
 	        .setFocus(true)
 	        .setCaptionLabel("Type words here")
 		    .setColor(ap.color(255,255,255))
+		    .show()
+		    .setVisible(true);
+			
 		    ;
 		Countdown.wordEntered
 			.setLabel("Enter Word")
 		    .setPosition(700,480)
 	        .setSize(80,70)
+	        .show()
+	        .setVisible(true);
 			;
 		
 		
@@ -318,7 +330,7 @@ public class LettersRound extends GameRound{
 	
 		selectedLetterButtons[nextSelectedLetterIndex].drawButton();
 		selectedLetterButtons[nextSelectedLetterIndex].toggleButton();
-
+		
 		if(nextSelectedLetterIndex<8){
 			nextSelectedLetterIndex++;
 		}
@@ -364,16 +376,7 @@ public class LettersRound extends GameRound{
 	
 	public void confirmWord(){
 		setCurrentWord();
-		//if(timeUp){
-//			calculateScores();
-//			ap.stroke(0);
-//			String valid="is not a valid word";
-//			if(wordChecker.validWord(p1Word.word)){
-//				valid="is a valid word";
-//			}
-//			ap.text("selected word: "+ p1Word.getWord()+" ("+getPlayerOneScore()+")"+valid,300,50);
-			
-		//}
+		
 		stopTimer();
 		calculateScores();
 	}
@@ -382,13 +385,15 @@ public class LettersRound extends GameRound{
 	
 	public void showTimer(){
 		ap.fill(255);
-		ap.rect(0,300,100,100);
+		ap.rect(0,300,100,132);
 		ap.fill(0);
-		ap.text(getTimer(),55,355);
+		ap.textSize(48);
+		ap.text(getTimer(),50,376);
 		if(getTimer()==0){
 			
 			stopTimer();
-			
+			setCurrentWord();
+			calculateScores();
 			Countdown.btnNextRound.active=true;
 			
 		}
@@ -397,6 +402,21 @@ public class LettersRound extends GameRound{
 	
 	public int getPlayerChoosing(){
 		return playerChoosing;
+	}
+
+	public void showLetters() {
+		for(int i=0; i<9; i++){
+			roundLetterButtons[i].show();
+			roundLetterButtons[i].drawButton();
+			selectedLetterButtons[i].show();
+			selectedLetterButtons[i].drawButton();
+		}
+	}
+
+	
+	void drawRoundBasic() {
+		drawBoard();
+		showLetters();
 	}
 	
 	

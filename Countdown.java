@@ -19,6 +19,7 @@ public class Countdown extends PApplet{
 	static Button btnConsonant, btnVowel;
 	static Button  btnDel, btnClear, btnConfirmWord;
 	static Button btnNextRound;
+	static Button btnPickNumbers;
 	static Textfield nameInput;
 	static ListBox opponentList;
 	static ListBox numberSelectList;
@@ -27,8 +28,8 @@ public class Countdown extends PApplet{
 	static Textlabel lblP1Name, lblP2Name; 
 	static Textlabel lblP1Score, lblP2Score;
 	static Textlabel lblRoundTitle;
-	static Textlabel lblP1Word;
-	static Textlabel lblP2Word;
+	static Textlabel lblP1Word, lblP2Word;
+	static Textlabel lblTargetNumber;
 	boolean gameStarted, playersChosen;
 	static Player humanPlayer;
 	static AIPlayer aiPlayer;
@@ -69,6 +70,7 @@ public class Countdown extends PApplet{
 		btnClear=new Button(this,"Clear",433, 432,132,40,textSize);
 		btnConfirmWord=new Button(this,"Confirm Word",565, 432,132,40,textSize);
 		btnNextRound=new Button(this,"Next Round",675,200,120,40,textSize);
+		btnPickNumbers=new Button(this,"Pick Numbers",406,403,132,40,textSize);
 		buttons.add(btnStartGame);
 		btnStartGame.active=true;
 		buttons.add(btnGameRules);
@@ -79,6 +81,7 @@ public class Countdown extends PApplet{
 		buttons.add(btnClear);
 		buttons.add(btnConfirmWord);
 		buttons.add(btnNextRound);
+		buttons.add(btnPickNumbers);
 		
 	}
 	
@@ -87,18 +90,18 @@ public class Countdown extends PApplet{
 	
 	
 	public void draw(){
-		
+		background(255,140,0);
 		if(! playersChosen){
 			
 			showOpeningScreen();
 			
 		}else{
-		fill(255,140,0);
-		stroke(255,140,0);
-		rect(103, 432,594,40);
+
+			roundController.currentRound().drawRoundBasic();
 		
+			
 		for(Button button:buttons){
-			if(button.active())
+			if(button!=null && button.active())
 				button.drawButton();
 			}
 		}
@@ -111,6 +114,8 @@ public class Countdown extends PApplet{
 			}
 			roundController.currentRound().showTimer();
 		}
+		
+		
 		
 	}
 	
@@ -213,6 +218,10 @@ public class Countdown extends PApplet{
 					((LettersRound) roundController.currentRound()).confirmWord();
 				}
 				
+				if(button==btnPickNumbers){
+					((NumbersRound) roundController.currentRound()).setNumbers();
+				}
+				
 			}
 		}
 		if(roundController.currentRound() instanceof LettersRound){
@@ -273,17 +282,22 @@ public class Countdown extends PApplet{
 		fill(255,140,0);
 		rect(103,300,594,132);
 		roundController.currentRound().drawRoundLayout();
-		
+		roundController.currentRound().stopTimer();
 		if(roundController.currentRound() instanceof LettersRound){
+			((LettersRound) roundController.currentRound()).showLetters();
 			if(pChoosing==1){
 				btnConsonant.show();
 				btnVowel.show();
 			}else{
-				
+				btnConsonant.hide();
+				btnVowel.hide();
 				
 			}
+			btnPickNumbers.hide();
 			if(numberSelectList !=null)
 				numberSelectList.setVisible(false);
+			
+			
 		}
 		else if(roundController.currentRound() instanceof NumbersRound){
 			if(pChoosing==1){
@@ -291,9 +305,16 @@ public class Countdown extends PApplet{
 			}else{
 				numberSelectList.setVisible(false);
 			}
-			
+			btnPickNumbers.show();
 			btnConsonant.hide();
 			btnVowel.hide();
+			btnDel.hide();
+			btnClear.hide();
+			btnConfirmWord.hide();
+			if(wordInput !=null)
+				wordInput.setVisible(false);
+			if(wordEntered !=null)
+				wordEntered.setVisible(false);
 		}
 		drawScorePanel();
 		
@@ -312,11 +333,10 @@ public class Countdown extends PApplet{
 	
 	public void keyPressed(){
 		if(key=='\n'){
-			if(! playersChosen){
 				if(roundController.currentRound() instanceof LettersRound){
 					wordEntered();
 				}
-			}
+			
 		}
 	}
 
@@ -328,8 +348,11 @@ public class Countdown extends PApplet{
 		lblP2Score=cp5.addLabel("p2Score");
 		lblP1Word=cp5.addLabel("p1Word");
 		lblP2Word=cp5.addLabel("p2Word");		
-		wordInput=cp5.addTextfield("wordInput");
-		wordEntered=cp5.addBang("wordEntered")	;
+		wordInput=cp5.addTextfield("wordInput")
+				.hide();
+		wordEntered=cp5.addBang("wordEntered")
+				.hide();
+		lblTargetNumber=cp5.addLabel("targetNumber");
 	}
 	
 	public void drawScorePanel(){
@@ -349,7 +372,7 @@ public class Countdown extends PApplet{
 		fill(255,140,0);
 		stroke(255,140,0);
 
-		rect(0,0,800,300);
+		rect(0,0,800,295);
 		lblRoundTitle
 				.setText("Round "+roundController.getCurrentRoundNumber()+
 						 " : " +roundController.currentRound().getRoundTitle()+

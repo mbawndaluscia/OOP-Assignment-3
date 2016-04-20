@@ -1,5 +1,6 @@
 package kevOOP;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import processing.core.PApplet;
@@ -9,6 +10,8 @@ public class NumbersRound extends GameRound{
 	
 	//array of 6 numbers chosen for round
 	private int[] roundNumbers=new int[6];
+	private ArrayList<Integer> listNumbers=new ArrayList<Integer>();
+	public Button[] numberButtons=new Button[6];
 	
 	//target number
 	private int targetNumber;
@@ -28,6 +31,8 @@ public class NumbersRound extends GameRound{
 	private int playerChoosing;
 	
 	private String[] numberSelectOptions;
+	
+	Random rand;
 
 	//constructor
 	public NumbersRound(PApplet applet, int roundNumber){
@@ -35,6 +40,12 @@ public class NumbersRound extends GameRound{
 		numDist=new NumbersDistribution();
 		setRoundNumber(roundNumber);
 		setRoundTitle("Numbers Round");
+		
+		for(int i=0; i<6; i++){
+			numberButtons[i]=new Button();
+			Countdown.buttons.add(numberButtons[i]);
+		
+		}
 		numberSelectOptions=new String[]{"4 Large, 2 Small",
 										 "3 Large, 3 Small",
 										 "2 Large, 4 Small",
@@ -44,15 +55,17 @@ public class NumbersRound extends GameRound{
 		if(getRoundNumber()==3||
 		   getRoundNumber()==9){
 			playerChoosing=1;
+			
 		}else{
 			playerChoosing=2;
 		}
+		rand=new Random();
 	}
 	
 	//randomly set number from 101-999
 	public void setTargetNumber(){
 		
-		Random rand=new Random();
+		
 		
 		int target=101;
 		
@@ -64,13 +77,14 @@ public class NumbersRound extends GameRound{
 	//add a large number to selection
 	public void addLargeNumber(){
 		roundNumbers[countPicked]=numDist.randomLargeNumber().getNumber();
-		
+		countPicked++;
 	}
 	
 	//add a small number to selection
 	public void addSmallNumber(){
 		roundNumbers[countPicked]=numDist.randomSmallNumber().getNumber();
-		
+		countPicked++;
+
 	}
 	
 	//return list of numbers chosen
@@ -121,18 +135,90 @@ public class NumbersRound extends GameRound{
 		
 		
 	}
+	
+	public void setNumbers(){
+		setTargetNumber();
+		int numLarge=0;
+		if(playerChoosing==1){
+		   numLarge=4-(int)(Countdown.numberSelectList.getValue());
+		}else{
+		   if(Countdown.aiPlayer.numberSkill==1){
+			   numLarge=4;
+		   }else{
+			   numLarge=4-randomNumberSelection();
+		   }
+		}
+		for(int i=0; i<numLarge; i++){
+			addLargeNumber();
+		}
+		
+		for(int i=numLarge; i<6; i++){
+			addSmallNumber();
+		}
+		
+		for(int i:roundNumbers){
+			listNumbers.add(i);
+		}
+		
+		showNumbers();
+		Countdown.lblTargetNumber
+			.setText("Target : " + targetNumber)
+			.setPosition(600,300)
+			.setFont(Countdown.font)
+		;
+			
+	}
+	
+	public void showNumbers(){
+		for(int i=0; i<6; i++){
+			int textSize=44;
+			String num=PApplet.str(roundNumbers[i]);
+			numberButtons[i]=new Button(
+					ap,num,202+i*66,300,66,66,textSize );
+			
+			
+			ap.fill(255);
+			numberButtons[i].drawButton();
+		}
+	}
 
 	void drawRoundLayout() {
-		
+		ap.background(255,140,0);
+
 		if(playerChoosing==1){
 		Countdown.numberSelectList=Countdown.cp5.addListBox("numberSelect")
 				  .setLabel("Select Numbers")
-				  .setPosition(450,510)
+				  .setPosition(300,400)
 			      .setSize(100,120)
-			      .addItems(numberSelectOptions);
-			      
+			      .addItems(numberSelectOptions)
+			      .setDefaultValue(4)
 				  ;
+				  Countdown.btnPickNumbers.show();
 		}
+		
+		for(int i=0; i<6; i++){
+			int textSize=44;
+			
+			numberButtons[i]=new Button(
+					ap,"",202+i*66,300,66,66,textSize );
+			
+			
+			ap.fill(255);
+			numberButtons[i].drawButton();
+		}
+		
+		Countdown.btnVowel.hide();
+		Countdown.btnConsonant.hide();
+		Countdown.btnDel.hide();
+		Countdown.btnClear.hide();
+		Countdown.btnConfirmWord.hide();
+	}
+	
+	public int randomNumberSelection(){
+		int x=0;
+		x=rand.nextInt(4);
+		
+		return x;
 	}
 	
 	public void showTimer(){
@@ -143,6 +229,12 @@ public class NumbersRound extends GameRound{
 	
 	int getPlayerChoosing() {
 		return playerChoosing;
+	}
+
+	
+	void drawRoundBasic() {
+		showNumbers();
+		
 	}
 	
 

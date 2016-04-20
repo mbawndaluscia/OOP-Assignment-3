@@ -14,7 +14,7 @@ public class NumbersDistribution{
 		for(int i=25; i<101; i+=25){
 			LargeNumber n=new LargeNumber(i);
 			largeNumbers.add(n);
-			largeNumbers.add(n);
+		
 		}
 		
 		//Add 2 each of the numbers 1-10 to small numbers list

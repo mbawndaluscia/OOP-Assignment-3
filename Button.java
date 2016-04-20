@@ -12,6 +12,7 @@ public class Button {
 	boolean active;
 	
 	public Button(){
+		
 		btnText="";
 	}
 	
@@ -28,13 +29,20 @@ public class Button {
 	}
 	
 	public void drawButton(){
-		ap.fill(0,0,225);
-		ap.stroke(210);
-		ap.rect(xLoc, yLoc, btnWidth, btnHeight);
-		ap.textAlign(PConstants.CENTER);
-		ap.fill(255);
-		ap.textSize(textSize);
-		ap.text(btnText, xLoc+btnWidth/2, yLoc+btnHeight*2/3);
+		if(ap!=null){
+			ap.fill(0,0,225);
+			ap.stroke(210);
+			ap.rect(xLoc, yLoc, btnWidth, btnHeight);
+			ap.textAlign(PConstants.CENTER);
+			ap.fill(255);
+			ap.textSize(textSize);
+			if(btnText.contentEquals("0")){
+				ap.text("", xLoc+btnWidth/2, yLoc+btnHeight*2/3);
+			}else{
+				ap.text(btnText, xLoc+btnWidth/2, yLoc+btnHeight*2/3);
+			}
+			
+		}
 	}
 	
 	public void toggleButton(){

@@ -72,6 +72,7 @@ abstract class GameRound {
 			timer-=1;
 		}else{
 			timeUp=true;	
+			calculateScores();
 		}
 	}
 	
@@ -93,7 +94,11 @@ abstract class GameRound {
 		return roundTitle;
 	}
 	
+	abstract void calculateScores();
+	
 	abstract void drawRoundLayout();
+	
+	abstract void drawRoundBasic();
 	
 	abstract int getPlayerChoosing();
 }

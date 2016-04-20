@@ -48,6 +48,22 @@ public class ConundrumRound extends GameRound{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
+
+	@Override
+	void calculateScores() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	void drawRoundBasic() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }
