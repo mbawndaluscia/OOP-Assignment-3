@@ -24,11 +24,29 @@ public class NumbersRound extends GameRound{
 	
 	//text of solution for each player
 	private String[] playerOneSolution,playerTwoSolution;
+	
+	private int playerChoosing;
+	
+	private String[] numberSelectOptions;
 
 	//constructor
-	public NumbersRound(PApplet applet){
+	public NumbersRound(PApplet applet, int roundNumber){
 		ap=applet;
 		numDist=new NumbersDistribution();
+		setRoundNumber(roundNumber);
+		setRoundTitle("Numbers Round");
+		numberSelectOptions=new String[]{"4 Large, 2 Small",
+										 "3 Large, 3 Small",
+										 "2 Large, 4 Small",
+										 "1 Large, 5 Small",
+										 "6 Small"};
+		
+		if(getRoundNumber()==3||
+		   getRoundNumber()==9){
+			playerChoosing=1;
+		}else{
+			playerChoosing=2;
+		}
 	}
 	
 	//randomly set number from 101-999
@@ -104,14 +122,27 @@ public class NumbersRound extends GameRound{
 		
 	}
 
-	@Override
 	void drawRoundLayout() {
-		// TODO Auto-generated method stub
 		
+		if(playerChoosing==1){
+		Countdown.numberSelectList=Countdown.cp5.addListBox("numberSelect")
+				  .setLabel("Select Numbers")
+				  .setPosition(450,510)
+			      .setSize(100,120)
+			      .addItems(numberSelectOptions);
+			      
+				  ;
+		}
 	}
 	
 	public void showTimer(){
 		ap.text(getTimer(),55,55);
+	}
+
+	
+	
+	int getPlayerChoosing() {
+		return playerChoosing;
 	}
 	
 

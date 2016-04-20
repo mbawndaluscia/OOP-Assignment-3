@@ -5,6 +5,10 @@ public class Player {
 	int playerNumber;
 	int score;
 	
+	public Player(){
+		
+	}
+	
 	public Player(String pName, int pNum){
 		playerName=pName;
 		playerNumber=pNum;

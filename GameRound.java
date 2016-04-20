@@ -11,14 +11,17 @@ abstract class GameRound {
 	
 	private int playerTwoScore;
 	
-	private int timer;
+	protected int timer;
 	
 	private boolean timerStarted;
 
 	protected boolean timeUp;
+
 	
 	
-	
+	protected void setRoundNumber(int x){
+		roundNumber=x;
+	}
 	
 	public int getRoundNumber(){
 		return roundNumber;
@@ -41,7 +44,9 @@ abstract class GameRound {
 			playerOneScore=playerTwoScore=score;
 			
 		}
-		
+		Countdown.humanPlayer.updateScore(playerOneScore);
+		Countdown.aiPlayer.updateScore(playerTwoScore);
+
 	}
 
 	public int getPlayerOneScore(){
@@ -55,6 +60,11 @@ abstract class GameRound {
 	public void startTimer(){
 		timer=30;
 		timerStarted=true;
+	}
+	
+	public void stopTimer(){
+		timer=30;
+		timerStarted=false;
 	}
 	
 	public void incrementTimer(){
@@ -84,4 +94,6 @@ abstract class GameRound {
 	}
 	
 	abstract void drawRoundLayout();
+	
+	abstract int getPlayerChoosing();
 }

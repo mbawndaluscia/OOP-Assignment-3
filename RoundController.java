@@ -24,23 +24,23 @@ public class RoundController {
 	public RoundController(PApplet applet){
 		ap=applet;
 		//initialise rounds
-		round1=new LettersRound(ap);
-		round2=new LettersRound(ap);
-		round4=new LettersRound(ap);
-		round5=new LettersRound(ap);
-		round7=new LettersRound(ap);
-		round8=new LettersRound(ap);
-		round10=new LettersRound(ap);
-		round11=new LettersRound(ap);
-		round12=new LettersRound(ap);
-		round13=new LettersRound(ap);
+		round1=new LettersRound(ap,1);
+		round2=new LettersRound(ap,2);
+		round4=new LettersRound(ap,4);
+		round5=new LettersRound(ap,5);
+		round7=new LettersRound(ap,7);
+		round8=new LettersRound(ap,8);
+		round10=new LettersRound(ap,10);
+		round11=new LettersRound(ap,11);
+		round12=new LettersRound(ap,12);
+		round13=new LettersRound(ap,13);
 		
-		round3=new NumbersRound(ap);
-		round6=new NumbersRound(ap);
-		round9=new NumbersRound(ap);
-		round14=new NumbersRound(ap);
+		round3=new NumbersRound(ap,3);
+		round6=new NumbersRound(ap,6);
+		round9=new NumbersRound(ap,9);
+		round14=new NumbersRound(ap,14);
 		
-		round15=new ConundrumRound(ap);
+		round15=new ConundrumRound(ap,15);
 		
 		rounds=new GameRound[]{round1,round2,round3,round4,round5,
 							   round6,round7,round8,round9,round10,
@@ -51,7 +51,8 @@ public class RoundController {
 	
 	//increment round counter
 	public void nextRound(){
-		currentRound+=1;
+		if(currentRound<15)
+			currentRound+=1;
 	}
 	
 	

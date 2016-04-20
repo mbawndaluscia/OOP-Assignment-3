@@ -6,8 +6,10 @@ public class ConundrumRound extends GameRound{
 	private String jumbledLetters;
 	private String solution;
 	PApplet ap;
-	public ConundrumRound(PApplet applet) {
+	public ConundrumRound(PApplet applet, int roundNumber) {
 		ap=applet;
+		setRoundNumber(roundNumber);
+		setRoundTitle("Conundrum");
 	}
 
 
@@ -37,6 +39,14 @@ public class ConundrumRound extends GameRound{
 	}
 	public void showTimer(){
 		ap.text(getTimer(),55,55);
+	}
+
+
+
+	@Override
+	int getPlayerChoosing() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	

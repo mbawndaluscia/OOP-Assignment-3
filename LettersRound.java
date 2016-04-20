@@ -1,5 +1,7 @@
 package kevOOP;
 
+import java.util.Random;
+
 import controlP5.*;
 
 import processing.core.PApplet;
@@ -30,23 +32,28 @@ public class LettersRound extends GameRound{
 	int countVowels=0;
 	int countConsonants=0;
 	
-	
+	 Random rand;
 	//words chosen by each player
 	Word p1Word,p2Word;
 	
-	 boolean p1Valid,p2Valid;
+	boolean p1Valid,p2Valid;
+	
+	
 	
 	//word checker object
 	WordChecker wordChecker;
+	WordFinder wordFinder;
+	int playerChoosing;
 	
 	
 	
-	
-	
-	public LettersRound(PApplet applet){
+	public LettersRound(PApplet applet, int roundNumber){
 		letterDistribution=new LettersDistribution();
 		ap=applet;
 		cp5=Countdown.cp5;
+		rand=new Random();
+		p1Word=new Word("");
+		p2Word=new Word("");
 		
 		for(int i=0; i<9; i++){
 			roundLetterButtons[i]=new Button();
@@ -54,10 +61,64 @@ public class LettersRound extends GameRound{
 			Countdown.buttons.add(roundLetterButtons[i]);
 			Countdown.buttons.add(selectedLetterButtons[i]);
 		}
+		setRoundNumber(roundNumber);
+		setRoundTitle("Letters Round");
+		if(getRoundNumber()==1||
+		   getRoundNumber()==4||
+		   getRoundNumber()==7||
+		   getRoundNumber()==10||
+		   getRoundNumber()==12){
+			playerChoosing=1;
+			
+		}else{
+			playerChoosing=2;
+			
+
+		}
 		
-	
+		
+		
 	}
 	
+	public void pickAILetters(){
+		int[]selection=new int[9];
+		selection=pickRandomLetters();
+		for(int i:selection){
+			if(i==0){
+				addConsonant();
+			}else{
+				addVowel();
+			}
+		}
+		Countdown.btnDel.show();
+		Countdown.btnClear.show();
+		Countdown.btnConfirmWord.show();
+		
+	}
+	public int[] pickRandomLetters(){
+		int numVowels=3;
+		numVowels +=rand.nextInt(3);
+		int[] selection=new int[9];
+		for(int i =0; i<numVowels; i++ ){
+			selection[i]=1;
+		}
+		selection=shuffleArray(selection); 
+		
+		return selection;
+	}
+	
+	private int[] shuffleArray(int[] array){
+		  
+	    
+	    for (int i = array.length - 1; i > 0; i--)
+	    {
+	      int index = rand.nextInt(i + 1);
+	      int temp = array[index];
+	      array[index] = array[i];
+	      array[i] = temp;
+	    }
+	    return array;
+	 }
 	public void addVowel(){
 		if(countVowels<maxVowels&&nextLetterIndex<9){
 			roundLetters[nextLetterIndex]=letterDistribution.randomVowel();
@@ -66,7 +127,11 @@ public class LettersRound extends GameRound{
 			countVowels++;
 		}
 		if(nextLetterIndex==9){
-			testScore();
+			showTimer();
+			startTimer();
+			Countdown.btnDel.show();
+			Countdown.btnClear.show();
+			Countdown.btnConfirmWord.show();
 		}
 	}
 	
@@ -79,7 +144,11 @@ public class LettersRound extends GameRound{
 			countConsonants++;
 		}
 		if(nextLetterIndex==9){
-			testScore();
+			showTimer();
+			startTimer();
+			Countdown.btnDel.show();
+			Countdown.btnClear.show();
+			Countdown.btnConfirmWord.show();
 		}
 	}
 	
@@ -88,13 +157,22 @@ public class LettersRound extends GameRound{
 	}
 	
 	private void calculateScores(){
-		
-		//word checker object
+		//word checker and finder objects
 		wordChecker=new WordChecker(roundLetters);
+		wordFinder=new WordFinder(roundLetters);
+		String p2SelectedWord="";
+		p2SelectedWord=wordFinder.getAllWordsFound().get(Countdown.aiPlayer.pickRandomWord());
+		p2Word=new Word(p2SelectedWord);
 		
+		
+//		for(String s: wordFinder.getAllWordsFound()){
+//			System.out.println(s);
+//		}
 		//are the words valid?
 		 p1Valid=wordChecker.validWord(p1Word.getWord());
 		 p2Valid=wordChecker.validWord(p2Word.getWord());
+		 
+		 
 		
 		//#1 neither player has a valid word, both score 0
 		if(!p1Valid&&
@@ -127,10 +205,41 @@ public class LettersRound extends GameRound{
 				setPlayerScores(2,p2Word.getValue());
 			}
 		}
+	
+	String p1ValidTxt="Valid",p2ValidTxt="Valid";
+	if(!p1Valid)
+		p1ValidTxt="Invalid!";
+	if(!p2Valid)
+		p2ValidTxt="Invalid!";
+	Countdown.lblP1Word
+	    .setText(p1Word.getWord()+" ("+p1Word.value+") " + p1ValidTxt)
+		.setPosition(ap.width/2-60,10)
+		.setFont(Countdown.font)
+		;
+	 Countdown.lblP2Word
+	    .setText(p2Word.getWord()+" ("+p2Word.value+") " + p2ValidTxt)
+		.setPosition(ap.width/2-60,60)
+		.setFont(Countdown.font)
+		;
+	 
+	 ap.fill(255,140,0);
+	 ap.stroke(255,140,0);
+	 ap.rect(ap.width/2-110,10,50,100);
+	 Countdown.lblP1Score
+		.setText(PApplet.str(Countdown.humanPlayer.getScore()));
+	 Countdown.lblP2Score
+		.setText(PApplet.str(Countdown.aiPlayer.getScore()));
+	 
+	 Countdown.btnNextRound.show();
+	 Countdown.btnDel.hide();
+	 Countdown.btnClear.hide();
+	 Countdown.btnConfirmWord.hide();
+	 Countdown.wordInput.setVisible(false);
+	 Countdown.wordEntered.setVisible(false);
 	}
 	
 	void drawRoundLayout(){
-		ap.background(232,216,226);
+		ap.background(255,140,0);
 		ap.fill(0,0,225);
 		ap.rect(103,300,594,132);
 		
@@ -139,9 +248,20 @@ public class LettersRound extends GameRound{
 			ap.line(i,300,i,432);
 		}
 		
-		Countdown.btnConsonant.drawButton();
-		Countdown.btnVowel.drawButton();
-		
+		if(playerChoosing==1){
+			Countdown.btnVowel.show();
+			Countdown.btnConsonant.show();
+		}else{
+			Countdown.btnVowel.hide();
+			Countdown.btnConsonant.hide();
+			
+		}
+		Countdown.btnDel.hide();
+		Countdown.btnClear.hide();
+		Countdown.btnConfirmWord.hide();
+	
+		Countdown.lblP1Word.setText("");
+		Countdown.lblP2Word.setText("");
 	}
 	
 	private void drawLetter(){
@@ -154,22 +274,22 @@ public class LettersRound extends GameRound{
 		roundLetterButtons[nextLetterIndex].drawButton();
 		if(nextLetterIndex==8){
 			
-			Countdown.btnVowel.toggleButton();
-			Countdown.btnConsonant.toggleButton();			
-			Countdown.btnDel.toggleButton();
-			Countdown.btnClear.toggleButton();
-			Countdown.btnSelectWord.toggleButton();
+			Countdown.btnVowel.hide();
+			Countdown.btnConsonant.hide();			
+			Countdown.btnDel.show();
+			Countdown.btnClear.show();
+			Countdown.btnConfirmWord.show();
 			
 			addCP5Controls();
 			
 			
 			for(int i=0; i<9; i++){
-				roundLetterButtons[i].toggleButton();
+				roundLetterButtons[i].show();
 			}
 		}
 	}
 	public void addCP5Controls(){
-		Countdown.cp5.addTextfield("wordInput")
+		Countdown.wordInput
 		    .setPosition(370,480)
 	        .setSize(330,70)
 	        .setFont(Countdown.font)
@@ -177,8 +297,7 @@ public class LettersRound extends GameRound{
 	        .setCaptionLabel("Type words here")
 		    .setColor(ap.color(255,255,255))
 		    ;
-		
-		Countdown.cp5.addBang("wordEntered")
+		Countdown.wordEntered
 			.setLabel("Enter Word")
 		    .setPosition(700,480)
 	        .setSize(80,70)
@@ -203,6 +322,8 @@ public class LettersRound extends GameRound{
 		if(nextSelectedLetterIndex<8){
 			nextSelectedLetterIndex++;
 		}
+		
+		setCurrentWord();
 	}
 	
 	public void deleteLetter(){
@@ -215,7 +336,7 @@ public class LettersRound extends GameRound{
 			selectedLetterButtons[nextSelectedLetterIndex].btnText="";
 			selectedLetterButtons[nextSelectedLetterIndex].drawButton();
 		}
-		
+		setCurrentWord();
 	}
 	
 	public void clearLetters(){
@@ -226,42 +347,56 @@ public class LettersRound extends GameRound{
 			}
 		}
 		nextSelectedLetterIndex=0;
+		setCurrentWord();
 	}
 	
-	public void selectWord(){
-		String word="";
+	private void setCurrentWord(){
+		String p1SelectedWord="";
+		
 		for(int i=0; i<9; i++){
-			word+=selectedLetterButtons[i].btnText;
+			p1SelectedWord+=selectedLetterButtons[i].btnText;
 			
 		}
 		
-		p1Word=new Word(word);
-		p2Word=new Word(word);
-		//if(timeUp){
-			calculateScores();
-			ap.stroke(0);
-			String valid="is not a valid word";
-			if(wordChecker.validWord(p1Word.word)){
-				valid="is a valid word";
-			}
-			ap.text("selected word: "+ p1Word.getWord()+" ("+getPlayerOneScore()+")"+valid,300,50);
-			
-		//}
-	}
-	
-	public void testScore(){
-		startTimer();
-		showTimer();
+		p1Word=new Word(p1SelectedWord);
 		
 	}
+	
+	public void confirmWord(){
+		setCurrentWord();
+		//if(timeUp){
+//			calculateScores();
+//			ap.stroke(0);
+//			String valid="is not a valid word";
+//			if(wordChecker.validWord(p1Word.word)){
+//				valid="is a valid word";
+//			}
+//			ap.text("selected word: "+ p1Word.getWord()+" ("+getPlayerOneScore()+")"+valid,300,50);
+			
+		//}
+		stopTimer();
+		calculateScores();
+	}
+	
+	
 	
 	public void showTimer(){
 		ap.fill(255);
-		ap.rect(0,0,100,100);
+		ap.rect(0,300,100,100);
 		ap.fill(0);
-		ap.text(getTimer(),55,55);
+		ap.text(getTimer(),55,355);
+		if(getTimer()==0){
+			
+			stopTimer();
+			
+			Countdown.btnNextRound.active=true;
+			
+		}
 		
-		
+	}
+	
+	public int getPlayerChoosing(){
+		return playerChoosing;
 	}
 	
 	

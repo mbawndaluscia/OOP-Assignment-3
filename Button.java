@@ -39,6 +39,17 @@ public class Button {
 	
 	public void toggleButton(){
 		active=!active;
+		
+	}
+	
+	public void hide(){
+		active=false;
+		
+	}
+	
+	public void show(){
+		active=true;
+		
 	}
 	
 	public boolean active(){

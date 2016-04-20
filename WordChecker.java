@@ -63,12 +63,14 @@ public class WordChecker  {
 		}
 		for(String s :wordLetters){
 			if(roundLetters.contains(s.toUpperCase())){
-				roundLetters.remove(s);
+				roundLetters.remove(s.toUpperCase());
+
 			}
 			else{
 				return false;
 			}
 		}
+		
 		return true;
 	}
 	
