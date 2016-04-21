@@ -102,7 +102,7 @@ private void findSolutions(ArrayList<int[]> numList,
 			//loop through four opeations + - * /
 			for(operation op:operation.values()){
 				
-				//loop through all pairs of number un array
+				//loop through all pairs of number in array
 				for(int[]  pair: getPairs(nums)){
 
 					//get result of current operation/pair
