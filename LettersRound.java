@@ -1,5 +1,6 @@
 package kevOOP;
 
+import java.util.List;
 import java.util.Random;
 
 import controlP5.*;
@@ -235,6 +236,12 @@ public class LettersRound extends GameRound{
 	 Countdown.btnConfirmWord.hide();
 	 Countdown.wordInput.setVisible(false);
 	 Countdown.wordEntered.setVisible(false);
+	 
+	 List<String>s=wordFinder.getAllWordsFound().subList(0, 5);
+	 Countdown.goodWordsList.setVisible(true)
+	 						.addItems(s)
+	 				 
+	 			;
 	}
 	
 	void drawRoundLayout(){
@@ -257,6 +264,7 @@ public class LettersRound extends GameRound{
 	
 		Countdown.lblP1Word.setText("");
 		Countdown.lblP2Word.setText("");
+		Countdown.lblTargetNumber.setText("");
 	}
 	public void drawBoard(){
 		ap.fill(0,0,225);
@@ -315,7 +323,14 @@ public class LettersRound extends GameRound{
 	        .setVisible(true);
 			;
 		
-		
+		Countdown.goodWordsList
+			.setLabel("Good Words")
+		    .setPosition(700,300)
+	        .setSize(80,200)
+	        .show()
+	        .setVisible(true);
+			;
+		;
 	}
 	
 	

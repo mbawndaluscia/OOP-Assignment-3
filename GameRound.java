@@ -13,7 +13,7 @@ abstract class GameRound {
 	
 	protected int timer;
 	
-	private boolean timerStarted;
+	protected boolean timerStarted;
 
 	protected boolean timeUp;
 

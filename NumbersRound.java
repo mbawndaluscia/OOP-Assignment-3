@@ -9,7 +9,7 @@ public class NumbersRound extends GameRound{
 	PApplet ap;
 	
 	//array of 6 numbers chosen for round
-	private int[] roundNumbers=new int[6];
+	protected int[] roundNumbers=new int[6];
 	private ArrayList<Integer> listNumbers=new ArrayList<Integer>();
 	public Button[] numberButtons=new Button[6];
 	
@@ -20,7 +20,10 @@ public class NumbersRound extends GameRound{
 	private int countPicked=0;
 	
 	//number distribution object for this round
-	NumbersDistribution numDist;
+	NumbersDistribution numberDistribution;
+	
+	//numbersolver object used to find solutions
+	NumberSolver numberSolver;
 	
 	//number achieved by each player
 	private int playerOneAnswer, playerTwoAnswer;
@@ -32,12 +35,14 @@ public class NumbersRound extends GameRound{
 	
 	private String[] numberSelectOptions;
 	
+	private String solution="";
 	Random rand;
 
 	//constructor
 	public NumbersRound(PApplet applet, int roundNumber){
 		ap=applet;
-		numDist=new NumbersDistribution();
+		numberDistribution=new NumbersDistribution();
+		
 		setRoundNumber(roundNumber);
 		setRoundTitle("Numbers Round");
 		
@@ -76,13 +81,13 @@ public class NumbersRound extends GameRound{
 	
 	//add a large number to selection
 	public void addLargeNumber(){
-		roundNumbers[countPicked]=numDist.randomLargeNumber().getNumber();
+		roundNumbers[countPicked]=numberDistribution.randomLargeNumber().getNumber();
 		countPicked++;
 	}
 	
 	//add a small number to selection
 	public void addSmallNumber(){
-		roundNumbers[countPicked]=numDist.randomSmallNumber().getNumber();
+		roundNumbers[countPicked]=numberDistribution.randomSmallNumber().getNumber();
 		countPicked++;
 
 	}
@@ -94,7 +99,14 @@ public class NumbersRound extends GameRound{
 	
 	//calculate points to be awarded to each player
 	public void calculateScores(){
-		
+		playerOneAnswer=Integer.valueOf(Countdown.numberEntered.getText());
+		if(Countdown.aiPlayer.numberSkill==1){
+			playerTwoAnswer=numberSolver.finalSolution.result;
+		}else if(Countdown.aiPlayer.numberSkill==2){
+			playerTwoAnswer=numberSolver.aiSolution1.result;
+		}else{
+			playerTwoAnswer=numberSolver.aiSolution2.result;
+		}
 		//find how close each player is to target number
 		int p1Distance=Math.abs(targetNumber-playerOneAnswer);
 		
@@ -133,7 +145,10 @@ public class NumbersRound extends GameRound{
 			setPlayerScores(winner,0);
 		}
 		
-		
+		Countdown.lblP1Score
+		.setText(PApplet.str(Countdown.humanPlayer.getScore()));
+		Countdown.lblP2Score
+		.setText(PApplet.str(Countdown.aiPlayer.getScore()));
 	}
 	
 	public void setNumbers(){
@@ -166,7 +181,27 @@ public class NumbersRound extends GameRound{
 			.setPosition(600,300)
 			.setFont(Countdown.font)
 		;
-			
+		Countdown.numberEntered
+			.setText("Enter best answer")
+			.setPosition(600,500)
+			.setSize(100,70)
+			.setFont(Countdown.font)
+			.setVisible(true)
+			.setText("0")
+			;
+		
+		numberSolver=new NumberSolver(roundNumbers,targetNumber);
+		Countdown.lblSolution
+		.setText( numberSolver.getSolution())
+		.setPosition(440,390)
+		.setFont(Countdown.font)
+		.setVisible(false)
+		;
+		
+		showTimer();
+		startTimer();
+	    
+	   
 	}
 	
 	public void showNumbers(){
@@ -179,8 +214,13 @@ public class NumbersRound extends GameRound{
 			
 			ap.fill(255);
 			numberButtons[i].drawButton();
+			
 		}
+		
 	}
+	
+		
+	
 
 	void drawRoundLayout() {
 		ap.background(255,140,0);
@@ -212,6 +252,8 @@ public class NumbersRound extends GameRound{
 		Countdown.btnDel.hide();
 		Countdown.btnClear.hide();
 		Countdown.btnConfirmWord.hide();
+		Countdown.lblP1Word.setText("");
+		Countdown.lblP2Word.setText("");
 	}
 	
 	public int randomNumberSelection(){
@@ -222,7 +264,23 @@ public class NumbersRound extends GameRound{
 	}
 	
 	public void showTimer(){
-		ap.text(getTimer(),55,55);
+		ap.fill(255);
+		ap.rect(0,300,100,132);
+		ap.fill(0);
+		ap.textSize(48);
+		ap.text(getTimer(),50,376);
+		 
+		
+			
+		
+		if(getTimer()==0){
+			Countdown.lblSolution.setVisible(true);
+			stopTimer();
+			calculateScores();
+			Countdown.btnNextRound.active=true;
+			
+		}
+		
 	}
 
 	
@@ -234,6 +292,9 @@ public class NumbersRound extends GameRound{
 	
 	void drawRoundBasic() {
 		showNumbers();
+		
+		
+		
 		
 	}
 	

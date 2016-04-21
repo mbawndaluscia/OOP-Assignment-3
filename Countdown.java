@@ -23,13 +23,15 @@ public class Countdown extends PApplet{
 	static Textfield nameInput;
 	static ListBox opponentList;
 	static ListBox numberSelectList;
+	static ListBox goodWordsList;
 	static Textfield wordInput;
 	static Bang wordEntered;
 	static Textlabel lblP1Name, lblP2Name; 
 	static Textlabel lblP1Score, lblP2Score;
 	static Textlabel lblRoundTitle;
 	static Textlabel lblP1Word, lblP2Word;
-	static Textlabel lblTargetNumber;
+	static Textlabel lblTargetNumber,lblSolution;
+	static Textfield numberEntered;
 	boolean gameStarted, playersChosen;
 	static Player humanPlayer;
 	static AIPlayer aiPlayer;
@@ -201,7 +203,7 @@ public class Countdown extends PApplet{
 				}
 				
 				if(button==btnNextRound){
-					//btnNextRound.hide();
+					btnNextRound.hide();
 					roundController.nextRound();
 					nextRound();
 				}
@@ -218,8 +220,10 @@ public class Countdown extends PApplet{
 					((LettersRound) roundController.currentRound()).confirmWord();
 				}
 				
-				if(button==btnPickNumbers){
+			if(button==btnPickNumbers){
 					((NumbersRound) roundController.currentRound()).setNumbers();
+					btnPickNumbers.hide();
+					numberEntered.setVisible(true);
 				}
 				
 			}
@@ -260,11 +264,11 @@ public class Countdown extends PApplet{
 		
 		int letterSkill = 0,numberSkill=0;
 		if((int) opponentList.getValue()==0){
-			letterSkill=4;
-			numberSkill=4;
+			letterSkill=5;
+			numberSkill=3;
 		}else if((int) opponentList.getValue()==1){
 			letterSkill=1;
-			numberSkill=1;
+			numberSkill=2;
 		}else if((int) opponentList.getValue()==2){
 			letterSkill=2;
 			numberSkill=1;
@@ -296,7 +300,8 @@ public class Countdown extends PApplet{
 			btnPickNumbers.hide();
 			if(numberSelectList !=null)
 				numberSelectList.setVisible(false);
-			
+			if(lblSolution!=null)
+				lblSolution.setVisible(false);
 			
 		}
 		else if(roundController.currentRound() instanceof NumbersRound){
@@ -315,6 +320,8 @@ public class Countdown extends PApplet{
 				wordInput.setVisible(false);
 			if(wordEntered !=null)
 				wordEntered.setVisible(false);
+			if(goodWordsList !=null)
+				goodWordsList.setVisible(false);
 		}
 		drawScorePanel();
 		
@@ -352,7 +359,10 @@ public class Countdown extends PApplet{
 				.hide();
 		wordEntered=cp5.addBang("wordEntered")
 				.hide();
+		numberEntered=cp5.addTextfield("");
 		lblTargetNumber=cp5.addLabel("targetNumber");
+		lblSolution=cp5.addLabel("solution");
+		goodWordsList=cp5.addListBox("");
 	}
 	
 	public void drawScorePanel(){

@@ -15,7 +15,7 @@ public class RoundController {
 	
 	
 	//conundrum round
-	private ConundrumRound round15;
+	//private ConundrumRound round15;
 	
 	//counter for current round
 	private int currentRound;
@@ -40,18 +40,18 @@ public class RoundController {
 		round9=new NumbersRound(ap,9);
 		round14=new NumbersRound(ap,14);
 		
-		round15=new ConundrumRound(ap,15);
+		//round15=new ConundrumRound(ap,15);
 		
 		rounds=new GameRound[]{round1,round2,round3,round4,round5,
 							   round6,round7,round8,round9,round10,
-							   round11,round12,round13,round14,round15};
+							   round11,round12,round13,round14};
 		
 		currentRound=1;
 	}
 	
 	//increment round counter
 	public void nextRound(){
-		if(currentRound<15)
+		if(currentRound<14)
 			currentRound+=1;
 	}
 	
